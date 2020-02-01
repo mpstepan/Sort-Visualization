@@ -71,8 +71,16 @@ class View:
         self.merge_sort_button.config(state="active")
         self.quick_sort_button.config(state="active")
 
-    def scramble(self):
+    # returns true if the list is sorted, false otherwise
+    def is_sorted(self):
+        for x in range(len(self.height_arr)-1):
+            if self.height_arr[x] > self.height_arr[x+1]:
+                return False
 
+        return True
+
+    # scrambles using Fisher-Yates scrambling algorithm - Runs in O(n) time
+    def scramble(self):
         self.disable_buttons()
         for i in range(self.num_boxes - 1, 0, -1):
 
@@ -88,7 +96,6 @@ class View:
     # ensures that all the rectangles are correct height; if not, updates the height and updates the view
     # small wait time just to make it more visible to the eye
     def update_screen(self):
-
         for x in range(self.num_boxes):
             h = self.height_arr[x]
             box = self.rectangles[x]
@@ -104,6 +111,8 @@ class View:
 
     # working selection sort
     def selection_sort(self):
+        if self.is_sorted():
+            return
 
         # disables all the buttons while the sorting is in progress
         self.disable_buttons()
@@ -134,8 +143,10 @@ class View:
         # enables the buttons after the sorting has finished
         self.enable_buttons()
 
-    # working insertion sort!
+    # working insertion sort
     def insertion_sort(self):
+        if self.is_sorted():
+            return
 
         self.disable_buttons()
         l_len = self.num_boxes
@@ -148,6 +159,7 @@ class View:
             while ctr >= 0:
                 height2 = self.height_arr[ctr]
 
+                # swaps the elements one by one until it it in the correct position, relative to sorted part
                 if height2 > height1:
                     self.height_arr[ctr], self.height_arr[ctr+1] = self.height_arr[ctr+1], self.height_arr[ctr]
 
@@ -160,13 +172,15 @@ class View:
 
     # working merge sort - visualizer
     def merge_sort(self):
+        if self.is_sorted():
+            return
+
         self.disable_buttons()
         self.merge_sort_helper(self.height_arr, 0)
         self.enable_buttons()
 
     # recursive helper for merge sort, which does the actual sorting
     def merge_sort_helper(self, arr, start_loc):
-
         l_len = len(arr)
 
         if l_len > 1:
@@ -210,6 +224,9 @@ class View:
 
     # method attached to button that gets called when the quick sort button is pressed
     def quick_sort(self):
+        if self.is_sorted():
+            return
+
         self.disable_buttons()
         self.quick_sort_helper(0, len(self.height_arr)-1)
         self.enable_buttons()
@@ -238,8 +255,6 @@ class View:
         self.update_screen()
         time.sleep(0.005)
         return i + 1
-
-
 
 
 def main():
